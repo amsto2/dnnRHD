@@ -21,7 +21,7 @@ import wfdb
 
 import warnings
 warnings.filterwarnings("ignore")
-
+import utils, models
 import rhdecgPre_process as prep
 import compute_temporal_feat as tempfeat
 from data_loader import load_data
@@ -153,21 +153,45 @@ print('RWE + HRV features(NSR) shape: ',RWE_HRV_RHD.shape)
 # print('Merged features (X,Y) shape:',(RHDECG_RWE_HRV_X.shape,RHDECG_RWE_Y.shape))
 
 
+
+
 ################################## Temporal
 
-hrv_feats = pd.read_excel('df_HRV.xlsx')
+temporal_feats = pd.read_excel('rhdecg_temporal_final.xlsx')
 # temporal_feats = temporal_feats.drop(['Diagnosis'], axis=1)
-HRV_NSR = hrv_feats.iloc[:138,:]
-HRV_RHD = hrv_feats.iloc[138:,:]
-print(HRV_NSR.shape,HRV_RHD.shape)
-RHDECG_RWE_Y=ECG_RWE_Y
+NSR_temporal = temporal_feats.iloc[:138,:]
+RHD_temporal = temporal_feats.iloc[138:,:]
+print(NSR_temporal.shape,RHD_temporal.shape)
+
+features_temporal = np.vstack((np.array(NSR_temporal).reshape(len(NSR_temporal),-1),np.array(RHD_temporal).reshape(len(RHD_temporal),-1)))
+print('Temporals: ',features_temporal.shape)
+features_hrv = np.vstack((HRV_NSR,HRV_RHD))
+print('HRV: ',features_hrv.shape)
+
+RWE_HRV_temporal_NSR = np.hstack((nsr_rel_energy['relative_energy'][:,1:-1], HRV_NSR, np.array(NSR_temporal).reshape(len(NSR_temporal),-1)))
+RWE_HRV_temporal_RHD = np.hstack((rhd_rel_energy['relative_energy'][:,1:-1],HRV_RHD, np.array(RHD_temporal).reshape(len(RHD_temporal),-1)))
+RHDECG_RWE_temporal_X = np.vstack((RWE_HRV_temporal_NSR,RWE_HRV_temporal_RHD))
+
+RHDECG_temporal_X = np.hstack((features_hrv,features_temporal))
+RHDECG_RWE_temporal_X[np.isnan(RHDECG_RWE_temporal_X)] = 0
+print('RWE + hrv + temporal features(RHD) shape: ',RWE_HRV_temporal_NSR.shape)
+print('RWE + hrv + temporal features(NSR) shape: ',RWE_HRV_temporal_RHD.shape)
+
+# ## Normalize [0,1] with minmax
+# scaler=MinMaxScaler()
+# Data_X_normalized = np.array([scaler.fit_transform(rec.reshape(-1,1)) for rec in RHDECG_RWE_temporal_X]) 
+# RHDECG_RWE_temporal_X = np.squeeze(Data_X_normalized, axis=2)
+
+# print('Merged features (X,Y) shape:',(RHDECG_RWE_temporal_X.shape,RHDECG_RWE_Y.shape))
+
+
 
 
 
 
 
 ##################################################3
-# Model
+# Model ( classical ML)
 ########## RWE features on RHDECG dataset (Table 5(a)) ##########
 
 # !pip install xgboost
@@ -419,13 +443,7 @@ def eval_ensemble(X, y, groups,cols):
         for ticklabel, tickcolor in zip(plt.gca().get_xticklabels(), my_colors):
             ticklabel.set_color(tickcolor)
         plt.show()
-        
-        
-        
-        
-        
-        
-        
+              
         
     mean_tpr = np.mean(tprs_vis, axis=0)
     mean_tpr[-1] = 1.0
@@ -509,12 +527,12 @@ def eval_ensemble(X, y, groups,cols):
 
 
 cols=['RWE(60.3–100Hz)','RWE(30.2-64.6Hz)','RWE(15.1–32.3Hz)','RWE(7.5-16.2Hz)','RWE(3.7-8.08Hz)','RWE(1.8–4.04Hz)','RWE(0.9–2.02Hz)','RWE(0.5–1.01Hz)','SDSD','prcRR20','RMSSD','MADRR','CVSD',
-      'QRS_duration(mean)','QRS_duration(std)','QRS_duration(Q2)','QRS_duration(Q50)','QRS_duration(Q98)','QRS_duration(range)','QRS_duration(median)','QRS_duration(skewness)','QRS_duration(mad)','QRS_duration(curtosis)',
-      'T_duration(mean)','T_duration(std)','T_duration(Q2)','T_duration(Q50)','T_duration(Q98)','T_duration(range)','T_duration(median)','T_duration(skewness)','T_duration(mad)','T_duration(curtosis)',
-      'RR(mean)','RR(std)','RR(Q2)','RR(Q50)','RR(Q98)','RR(range)','RR(median)','RR(skewness)','RR(mad)','RR(curtosis)',
-      'TpTe(mean)','TpTe(std)','TpTe(Q2)','TpTe(Q50)','TpTe(Q98)','TpTe(range)','TpTe(median)','TpTe(skewness)','TpTe(mad)','TpTe(curtosis)',
-      'iCEB(mean)','iCEB(std)','iCEB(Q2)','iCEB(Q50)','iCEB(Q98)','iCEB(range)','iCEB(median)','iCEB(skewness)','iCEB(mad)','iCEB(curtosis)',
-      'iCEBc(mean)','iCEBc(std)','iCEBc(Q2)','iCEBc(Q50)','iCEBc(Q98)','iCEBc(range)','iCEBc(median)','iCEBc(skewness)','iCEBc(mad)','iCEBc(curtosis)',
+      'QRS_duration(mean)','QRS_duration(median)',
+      'T_duration(mean)','T_duration(median)',
+      'RR(mean)','RR(std)','RR(Q2)','RR(Q50)','RR(Q98)','RR(range)','RR(median)',
+      'TpTe(mean)','TpTe(median)',
+      'iCEB(mean)','iCEB(median)',
+      'iCEBc(mean)','iCEBc(median)',
 ]
 
 ######################################
@@ -579,7 +597,7 @@ plt.xticks(rotation=90)
 plt.xlabel('Features')
 plt.ylabel('Feature Importance')
 plt.title('RWE & temporal related features importance graph')
-my_colors = 'k'#, 'b', 'b', 'b', 'k', 'k', 'b', 'b', 'k', 'k', 'k','b']
+my_colors = 'k']
 for ticklabel, tickcolor in zip(plt.gca().get_xticklabels(), my_colors):
     ticklabel.set_color(tickcolor)
 plt.show()
@@ -599,89 +617,7 @@ import tensorflow as tf
 import tensorflow.keras.backend as K
 from tensorflow.keras.utils import plot_model
 
-#  InceptionTime model
 
-#https://github.com/hfawaz/InceptionTime
-def _inception_module( input_tensor, stride=1, activation='linear', use_bottleneck=True,bottleneck_size=32, kernel_size=11):
-
-    if use_bottleneck and int(input_tensor.shape[-1]) > 1:
-        input_inception = Conv1D(filters=bottleneck_size, kernel_size=1,
-                                              padding='same', activation=activation, use_bias=False)(input_tensor)
-    else:
-        input_inception = input_tensor
-
-    kernel_size_s = [3, 5, 8, 11, 17]
-    kernel_size_s = [kernel_size // (2 ** i) for i in range(3)]
-
-    conv_list = []
-    nb_filters = 32
-    for i in range(len(kernel_size_s)):
-        conv_list.append(Conv1D(filters=nb_filters, kernel_size=kernel_size_s[i],
-                                             strides=stride, padding='same', activation=activation, use_bias=False)(
-            input_inception))
-
-    max_pool_1 = MaxPool1D(pool_size=3, strides=stride, padding='same')(input_tensor)
-
-    conv_6 = Conv1D(filters=nb_filters, kernel_size=1,
-                                 padding='same', activation=activation, use_bias=False)(max_pool_1)
-
-    conv_list.append(conv_6)
-
-    x = Concatenate(axis=2)(conv_list)
-    x = BatchNormalization()(x)
-    x = Activation(activation='relu')(x)
-    return x
-
-def _shortcut_layer( input_tensor, out_tensor):
-    shortcut_y = Conv1D(filters=int(out_tensor.shape[-1]), kernel_size=1,
-                                     padding='same', use_bias=False)(input_tensor)
-    shortcut_y = BatchNormalization()(shortcut_y)
-
-    x = Add()([shortcut_y, out_tensor])
-    x = Activation('relu')(x)
-    return x
-
-def build_model( input_shape, num_classes, depth, use_bottleneck,bottleneck_size, kernel_size=11):
-    use_residual = True
-    input_layer = Input(input_shape)
-
-    x = input_layer
-    input_res = input_layer
-
-    for d in range(depth):
-
-        x = _inception_module(x, use_bottleneck= True,bottleneck_size=32)
-
-        if use_residual and d % 3 == 2:
-            x = _shortcut_layer(input_res, x)
-            input_res = x
-
-    gap_layer = GlobalAvgPool1D()(x)
-
-    output_layer = Dense(num_classes, activation='softmax')(gap_layer)
-
-    model = Model(inputs=input_layer, outputs=output_layer)
-
-    return model
-
-def model_inceptionTime(input_shape, num_classes,ks,nb_epochs):
-    output_directory = './'
-    nb_filters = 16
-    use_residual = True
-    use_bottleneck = True
-    depth = 4
-    kernel_size = ks - 1
-    callbacks = None
-    batch_size = 16
-    bottleneck_size = 32
-    build=True
-    verbose = False
-    num_classes=num_classes
-    model = build_model(input_shape, num_classes,depth, use_bottleneck,bottleneck_size)
-    return model
-
-
-from tensorflow import keras
 def plot_history_metrics(history: keras.callbacks.History):
     total_plots = len(history.history)
     cols = total_plots // 2
@@ -701,12 +637,6 @@ def plot_history_metrics(history: keras.callbacks.History):
 
 
 # InceptionTime reported (Table 5(b))
-import tensorflow as tf
-from tensorflow import keras
-from keras.callbacks import ModelCheckpoint, History
-from sklearn.model_selection import train_test_split, StratifiedGroupKFold
-from sklearn.utils import class_weight
-from sklearn.preprocessing import OneHotEncoder
 from sklearn.metrics import classification_report, confusion_matrix, ConfusionMatrixDisplay, \
     roc_curve, auc, RocCurveDisplay, accuracy_score
     
