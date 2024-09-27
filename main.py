@@ -728,7 +728,7 @@ for train_index, test_index in folds.split(Data_X, Data_Y, groups):
     print('Total test labels: ', y_test.shape) 
     
     ################### Initialize the model and params ###############
-    model_cnn = model_inceptionTime(input_shape=(X_train.shape[1],1), num_classes=2, ks=17, nb_epochs=EPOCHS)
+    model_cnn = model_inceptionTime(input_shape=(X_train.shape[1],1), num_classes=2, ks=11, nb_epochs=EPOCHS)
     opt=tf.keras.optimizers.Adam()
     model_cnn.compile(optimizer=opt, loss=prep.categorical_focal_loss(), metrics=['accuracy',
                                                                                  keras.metrics.AUC(),
