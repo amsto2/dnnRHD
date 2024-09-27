@@ -726,7 +726,6 @@ for train_index, test_index in folds.split(Data_X, Data_Y, groups):
     print('Total test labels: ', y_test.shape) 
     
     ################### Initialize the model and params ###############
-#     model_cnn = model03((X_train.shape[1],1), num_classes=2, wave_kern='db2', level=4, ks=[11,9], convrep=2, wavelet=True)
     model_cnn = model_inceptionTime(input_shape=(X_train.shape[1],1), num_classes=2, ks=17, nb_epochs=EPOCHS)
     opt=tf.keras.optimizers.Adam()
     model_cnn.compile(optimizer=opt, loss=prep.categorical_focal_loss(), metrics=['accuracy',
@@ -738,11 +737,11 @@ for train_index, test_index in folds.split(Data_X, Data_Y, groups):
         weight_dict[index] = value
     
     print(f"....... Running Fold {fold_count} .....\n" )
-    save_dir='C:/Users/u0143922/.spyder-py3/'
+    save_dir=path
     save=True
     if save:
-        saved = save_dir + "saved_clasifier_CNN.h5"
-        hist = save_dir + 'wavenet_classifier_training_history_cnn.csv'
+        saved = save_dir + "classifier_name.h5"
+        hist = save_dir + 'classifier_name_training_history_cnn.csv'
         checkpointer = ModelCheckpoint(filepath=saved, monitor='val_loss', verbose=0, save_best_only=True)
         history = History()
     callbacks_list = [history, checkpointer, models.loss_history, models.lrate, models.stop]
@@ -778,17 +777,7 @@ for train_index, test_index in folds.split(Data_X, Data_Y, groups):
     pred = model_cnn.predict(X_test)
     y_pred = np.argmax(pred, axis=1)
     y_true = np.argmax(tf.cast(y_test, tf.float32), axis=1)    
-#     plt.rcParams['figure.figsize'] = [15,3]
-#     for tt in range(len(y_pred)):
-#         if y_pred[tt]!=y_true[tt]:
-#             plt.title(f'Prediction [i,pred,true]: {[tt, y_pred[tt],y_true[tt]]}')
-#             plt.plot(X_test[tt])
-#             plt.show()
 
-#     plt.plot(history.history['loss'])
-#     plt.plot(history.history['val_loss'])
-#     plt.legend(['Training Loss','Validation Loss'])
-#     plt.show()
     plot_history_metrics(history)
     
     viz = RocCurveDisplay.from_predictions(
@@ -865,8 +854,9 @@ plt.title('Confusion matrix 10folds-CV \n(CNN: InceptionTime)')
 plt.grid(False)
 plt.show()
 
-
-# Defining the Grad-CAM algorithm
+#########################################################
+# Defining the Grad-CAM algorithm for model visualization
+#########################################################
 def grad_cam(layer_name, data, model):
     grad_model = tf.keras.models.Model(
         [model.inputs], [model.get_layer(layer_name).output, model.output]
@@ -889,7 +879,7 @@ def grad_cam(layer_name, data, model):
     heatmap = np.expand_dims(heatmap,0)
     return heatmap
 
-# DB2 Class activation map from the input layer to the last Conv. layer
+# Class activation map from the input layer to the last Conv. layer
 plt.figure(dpi=600)
 plt.rcParams.update({'font.size': 20})
 layer_name = 'conv1d_219'
