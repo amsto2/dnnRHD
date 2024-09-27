@@ -1,6 +1,6 @@
 # dnn_RHD
-This 
-Machine learning for classification of advanced rheumatic heart disease from wearable electrocardiogram signals
+ 
+Machine learning for classification of advanced rheumatic heart disease from wearable electrocardiogram signals (link to paper)
 
 This repo contains code snippets used for the aforementioned paper. In this work we apply classical machine learning models and CNN models to perfrom detection of RHD from healthy subjects.
 The work flow block diagram is shown below.
