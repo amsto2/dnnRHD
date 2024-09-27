@@ -1,5 +1,14 @@
+"""
+Created on Fri Feb  2 02:37:06 2024
+
+@author: Amsalu Tomas Chuma
+"""
 import numpy as np
 import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import warnings
+warnings.filterwarnings("ignore")
 
 def get_score_after_permutation(model, X, y, curr_feat):
     """return the score of model when curr_feat is permuted"""
