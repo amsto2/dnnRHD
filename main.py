@@ -157,7 +157,7 @@ print('RWE + HRV features(NSR) shape: ',RWE_HRV_RHD.shape)
 
 ################################## Temporal
 
-temporal_feats = pd.read_excel('rhdecg_temporal_final.xlsx')
+temporal_feats = pd.read_excel(path+'temp-feat-file')
 # temporal_feats = temporal_feats.drop(['Diagnosis'], axis=1)
 NSR_temporal = temporal_feats.iloc[:138,:]
 RHD_temporal = temporal_feats.iloc[138:,:]
@@ -563,7 +563,9 @@ results1,results2,results3=eval_ensemble(new_df.values, RHDECG_RWE_Y, groups,col
 
 
 '''
-
+######################################
+# Plot features importance 
+######################################
 results1,results2,results3=eval_ensemble(RHDECG_RWE_temporal_X[:,:], RHDECG_RWE_Y, groups,cols)
 cols1=cols[:9]
 cols2=cols[9:]
