@@ -24,81 +24,9 @@ warnings.filterwarnings("ignore")
 
 import rhdecgPre_process as prep
 import compute_temporal_feat as tempfeat
+from data_loader import load_data
 
-
-# read all data----- split into K-folds based on subjects
-file_indx_list =[]
-idx_folds = []
-num_fold = 1
-path = 'D:/path-of-the-Experimental-dataset/'
-dataset_loc1 = path+'normal_data' # Folder of Healthy controls
-dataset_loc2 = path+'rhd_data' # Folder of RHD subjects
-plt.rcParams['figure.figsize'] = [30,5]
-
-def load_data(d_type_in):
-
-    file_indx_list = []
-    filelist = []       
-
-    # store all the file names in this list
-    if d_type_in == 'normal':
-        data_path = dataset_loc1
-    else:
-        data_path = dataset_loc2
-
-    for root, dirs, files in os.walk(data_path):
-        for file in files:
-          #append the file name to the list
-          if(file.endswith(".mat")):
-            filelist.append(os.path.join(root,file))
-            file_id = [int(s) for s in re.findall("\d+", os.path.join(root,file)) ]
-            file_indx_list.append(file_id[1])
-    
-    ecg_train = []
-    ecg_test = []
-    rec_list = []
-    group_id = []
-    secs=30
-    fs=500
-    # TRAIN-TEST by SUBJECTS
-    for name in filelist:
-        # get the subject's folder id
-        indx = [int(s) for s in re.findall("\d+", name) ]
-        # Load the signal from .mat fie
-        temp_ecg = loadmat(name)
-        temp_ecg = temp_ecg['ECGrecord'].T
-        # Arrange in 10sec length and reshape 
-        # Read record
-        temp_ecg= temp_ecg[:-1,:]
-
-        if d_type_in=='rhd':
-            _, temp_ecg_ = prep.clean_data_rhd(name, indx, temp_ecg)
-        else:
-            _, temp_ecg_ = prep.clean_data_normal(name, indx, temp_ecg)
-        if temp_ecg_.shape[0]==0:
-            print('Noisy recording of the subject:', [indx[1],indx[4]])
-        else:
-            # Checking for less than 10s recording : basically one Normal subject
-            if temp_ecg_.reshape(-1).shape[0] <fs*10:
-                print(f'Recording Less than 10s duration: {temp_ecg_.reshape(-1).shape[0]} {name}')
-                  # temp_ecg_ = np.append(temp_ecg_,int(fs*10-len(temp_ecg_)),constant)      
-            secs10=10
-            # collect in either train or test based on the subject split index
-            temp_ecg_ = np.expand_dims(temp_ecg_[:fs*secs10].reshape(-1),axis=0)[:,:int(fs*secs10)]
-            ecg_train.append(temp_ecg_)
-            rec_list.append([indx[1], temp_ecg_.shape[0]])
-            group_id.append(indx[1])
-
-    ecg_trainX = np.concatenate(ecg_train).ravel().reshape(-1,secs10*fs)
-    group_id = np.array(group_id)
-    if d_type_in=='normal':
-        ecg_trainY = np.zeros(ecg_trainX.shape[0])
-    else:
-        ecg_trainY = np.ones(ecg_trainX.shape[0])
-    rec_list = np.array(rec_list)
-
-    return ecg_trainX, ecg_trainY, rec_list, group_id
-
+# load dataset and split the records based on subjects
 ecg_NSR, NSR_labels, rec_list_NSR,group_id_NSR = load_data('normal')
 ecg_RHD, RHD_labels, rec_list_RHD,group_id_RHD = load_data('rhd')       
 print('Normal_RHDECG classes: ',ecg_NSR.shape)
@@ -161,7 +89,7 @@ plt.rcParams['figure.figsize'] = [5,5]
 # RHDECG_RWE_X=np.array(df_RWE_rhdecg) #pca_comp
 ECG_RWE_X = np.array(pd.concat([df_RWE_rhdecg], axis=0, join='inner'))
 # CHF_Y = np.array([2 for i in range(len(df_RWE_chf))])
-ECG_RWE_Y=np.concatenate((np.zeros(len(nsr_rel_energy['relative_energy'])),np.ones(len(rhd_rel_energy['relative_energy']))),axis=0) #perSubject_avged
+RHDECG_RWE_Y=np.concatenate((np.zeros(len(nsr_rel_energy['relative_energy'])),np.ones(len(rhd_rel_energy['relative_energy']))),axis=0) #perSubject_avged
 
 # # For CHF dataset
 # groups_CHF=np.ones((len(CHF_Y),))
@@ -181,155 +109,53 @@ print('groups: ',groups.shape)
 print('Rec_list: ',rec_list.shape)
 
 
-
-
-#HRV#################################################333
-# def compute_HRV_feat(ecg_signal):
-#     Fs=500
-#     HRV_feat=[]
-#     for i in range(len(ecg_signal)):    
-#         ecg_filt = nk.ecg_clean(ecg_signal[i], sampling_rate=Fs, method='neurokit')
-#         _, peaks = nk.ecg_peaks(ecg_filt, sampling_rate=Fs, show=True,method='pantompkins')
-#         hrv_time = nk.hrv_time(peaks, sampling_rate=Fs, show=False)
-#         HRV_feat.append(hrv_time)
-
-#     HRV_feat=pd.concat(HRV_feat)
-#     HRV_feat= HRV_feat.dropna(axis=1, how='all').reset_index(drop=True) # drop if there are NANs
-#     return HRV_feat
-
-# HRV_NSR = compute_HRV_feat(ecg_NSR[:,:5000]) # HRV features for Healthy controls
-# HRV_RHD = compute_HRV_feat(ecg_RHD[:,:5000]) # HRV features for RHD subjects
-# # HRV_NSR =HRV_NSR.drop(['HRV_SDNN','HRV_CVNN','HRV_MadNN','HRV_MCVNN','HRV_IQRNN','HRV_pNN50','HRV_HTI','HRV_TINN'], axis=1)
-# # HRV_RHD =HRV_RHD.drop(['HRV_SDNN','HRV_CVNN','HRV_MadNN','HRV_MCVNN','HRV_IQRNN','HRV_pNN50','HRV_HTI','HRV_TINN'], axis=1)
-
-
-# # Now Merge the two features
-# RWE_HRV_NSR = np.hstack((nsr_rel_energy['relative_energy'][:,1:-1], HRV_NSR))
-# RWE_HRV_RHD = np.hstack((rhd_rel_energy['relative_energy'][:,1:-1], HRV_RHD))
-# RHDECG_HRV_X = np.vstack((HRV_NSR,HRV_RHD))
-
-# RHDECG_RWE_HRV_X = np.vstack((RWE_HRV_NSR,RWE_HRV_RHD))
-# print('RWE + HRV features(RHD) shape: ',RWE_HRV_NSR.shape)
-# print('RWE + HRV features(NSR) shape: ',RWE_HRV_RHD.shape)
-
-# ## Normalize [0,1] with minmax
-# scaler=MinMaxScaler()
-# Data_X_normalized = np.array([scaler.fit_transform(rec.reshape(-1,1)) for rec in RHDECG_RWE_HRV_X]) 
-# RHDECG_RWE_HRV_X = np.squeeze(Data_X_normalized, axis=2)
-# RHDECG_RWE_Y=ECG_RWE_Y
-# print('Merged features (X,Y) shape:',(RHDECG_RWE_HRV_X.shape,RHDECG_RWE_Y.shape))
-
-
-# '''
-
-############################################################
+#################################################
+# HRV Features
+#################################################
 import preprocess_func as prep_hrv
 from scipy.signal import find_peaks
 from hrvanalysis.preprocessing import remove_outliers, remove_ectopic_beats, interpolate_nan_values
 from hrvanalysis.extract_features import get_time_domain_features, get_frequency_domain_features, \
     get_poincare_plot_features,get_csi_cvi_features, get_sampen
-#, plot_psd
-plt.rcParams['figure.figsize']=[20,6]
-# 1) template matching filter to pronounce R-peaks
-# 2) R-peak detection
-# 3) RR interval analysis
-peaks_all=[]
-HRV_params_all=[]
-HRV_params=[]
-HRVs=[]
-timedomain_params=[]
-HRV_params_all=[]
-flat_params_list=[]
-fs=500
-for j in range(0,len(nsr_filt)): 
-    # Filter the signal
-    ecg=nsr_filt[j,:] 
-    # ecg_filt = nk.ecg_clean(ecg, sampling_rate=fs, method='neurokit')  
-    # ecg_filt=prep_hrv.baseline_correct(ecg_filt)
-    _, peaks = nk.ecg_peaks(ecg, sampling_rate=500, correct_artifacts=False,method='neurokit')
-      
-    peaks=peaks['ECG_R_Peaks']#[1:-1]#+delay
-    peaks_all.append(peaks)
-    
-    # Compute HRV features tiny
-    #r_intervals_list = np.diff(peaks*1/fs)
-    rr_intervals_list = np.diff(peaks)
-    HRVs.append(prep_hrv.timedomain(rr_intervals_list))
-    hrv = {}
-    for d in HRV_params:
-        hrv.update(d)   
-    HRV_params.append(list(hrv.values()))
-    
-    
-    #################################################################
-    # HRV analysis module
-    #################################################################
-    rpeaks_list=peaks#rr_intervals_list*1000 # convert to ms
-    # This remove outliers from signal
-    rr_intervals_without_outliers = remove_outliers(rr_intervals=rr_intervals_list,  
-                                                    low_rri=300, high_rri=2000, verbose=0) #30bpm - 150bpm
-    
-#     # This replace outliers nan values with linear interpolation
-#     interpolated_rr_intervals = interpolate_nan_values(rr_intervals=rr_intervals_without_outliers,
-#                                                        interpolation_method="linear")
-    interpolated_rr_intervals=rr_intervals_without_outliers
-    # This remove ectopic beats from signal
-    nn_intervals_list,ectopic = remove_ectopic_beats(rr_intervals=rr_intervals_without_outliers,method='acar',verbose=1)
-    if ectopic >=3:
-        nn_intervals_list=list(np.zeros((len(nn_intervals_list))))
-        print('============ ',j)
 
-    # This replace ectopic beats nan values with linear interpolation
-    interpolated_nn_intervals = interpolate_nan_values(rr_intervals=nn_intervals_list)
-#     print('nn_intervals_list ',rr_intervals_without_outliers)
-#     print('rpeaks_list ',rpeaks_list)
-#     print('rpeaks_diff ',np.diff(rpeaks_list))
-    time_domain_features = get_time_domain_features(interpolated_nn_intervals)
-#     frequency_domain_features = get_frequency_domain_features(interpolated_nn_intervals, 
-#                                                               method='welch',
-#                                                               sampling_frequency = 500,
-#                                                               interpolation_method= "linear",
-#                                                               vlf_band = (0.003, 0.04),
-#                                                               hf_band = (0.15, 0.40))
-#     # geometrical_features = get_geometrical_features(interpolated_nn_intervals)
-#     poincare_features = get_poincare_plot_features(interpolated_nn_intervals)
-#     csi_cvi_features = get_csi_cvi_features(interpolated_nn_intervals)
-    #samp_entropy=get_sampen(interpolated_nn_intervals)
-    #timedomain_params.append([time_domain_features,frequency_domain_features,poincare_features,csi_cvi_features,samp_entropy])
-    timedomain_params.append([time_domain_features])
-    # timedomain_params.append([time_domain_features,frequency_domain_features,poincare_features,
-    #                    csi_cvi_features, samp_entropy])
-    # plot_psd(nn_intervals_list, method="welch")
-    # plot_psd(nn_intervals_list, method="lomb")
-    flat_params_list = np.concatenate(timedomain_params).ravel()
-    hrv_all = {}
-    for d in flat_params_list:
-        hrv_all.update(d) 
-    if j in [11111]:#[16,36,37,38,58]: #other_disease_indices
-        continue
-    else:
-        HRV_params_all.append(list(hrv_all.values()))
-#     print('iii= ',j)
-#cols=list(time_domain_features.keys())+list(frequency_domain_features.keys())+list(poincare_features.keys())+list(csi_cvi_features.keys())+list(samp_entropy.keys())
-cols=list(time_domain_features.keys())
-df_RR_feat = pd.DataFrame(HRV_params_all, columns=cols)
-# arrange class labels
-# df_Y = df_Y.loc[~df_Y.index.isin(other_disease_indices)]
-# additional metadata features
+def compute_HRV_feat(ecg_signal):
+    Fs=500
+    HRV_feat=[]
+    for i in range(len(ecg_signal)):    
+        ecg_filt = nk.ecg_clean(ecg_signal[i], sampling_rate=Fs, method='neurokit')
+        _, peaks = nk.ecg_peaks(ecg_filt, sampling_rate=Fs, show=True,method='pantompkins')
+        hrv_time = nk.hrv_time(peaks, sampling_rate=Fs, show=False)
+        HRV_feat.append(hrv_time)
 
-df_RR_feat.replace([np.inf, -np.inf], 0, inplace=True)  # can be replace with np.nan
-#df_RR_feat.sampen_2.replace(0, df_RR_feat.sampen_2.max()**2, inplace=True)  # can be replace with np.nan
+    HRV_feat=pd.concat(HRV_feat)
+    HRV_feat= HRV_feat.dropna(axis=1, how='all').reset_index(drop=True) # drop if there are NANs
+    return HRV_feat
 
-# MErge BorderLine and Definetes
-df_RR_feat.to_excel("df_HRV_amsalu_x.xlsx",sheet_name='HRV_features_normalized')
+HRV_NSR = compute_HRV_feat(ecg_NSR[:,:5000]) # HRV features for Healthy controls
+HRV_RHD = compute_HRV_feat(ecg_RHD[:,:5000]) # HRV features for RHD subjects
+HRV_NSR =HRV_NSR.drop(['HRV_SDNN','HRV_CVNN','HRV_MadNN','HRV_MCVNN','HRV_IQRNN','HRV_pNN50','HRV_HTI','HRV_TINN'], axis=1)
+HRV_RHD =HRV_RHD.drop(['HRV_SDNN','HRV_CVNN','HRV_MadNN','HRV_MCVNN','HRV_IQRNN','HRV_pNN50','HRV_HTI','HRV_TINN'], axis=1)
 
 
-# '''
+# Now Merge the two features
+RWE_HRV_NSR = np.hstack((nsr_rel_energy['relative_energy'][:,1:-1], HRV_NSR))
+RWE_HRV_RHD = np.hstack((rhd_rel_energy['relative_energy'][:,1:-1], HRV_RHD))
+RHDECG_HRV_X = np.vstack((HRV_NSR,HRV_RHD))
+
+RHDECG_RWE_HRV_X = np.vstack((RWE_HRV_NSR,RWE_HRV_RHD))
+print('RWE + HRV features(RHD) shape: ',RWE_HRV_NSR.shape)
+print('RWE + HRV features(NSR) shape: ',RWE_HRV_RHD.shape)
+
+## Normalize [0,1] with minmax
+# scaler=MinMaxScaler()
+# Data_X_normalized = np.array([scaler.fit_transform(rec.reshape(-1,1)) for rec in RHDECG_RWE_HRV_X]) 
+# RHDECG_RWE_HRV_X = np.squeeze(Data_X_normalized, axis=2)
+# print('Merged features (X,Y) shape:',(RHDECG_RWE_HRV_X.shape,RHDECG_RWE_Y.shape))
 
 
 ################################## Temporal
 
-hrv_feats = pd.read_excel('df_HRV_amsalu_nsr.xlsx')
+hrv_feats = pd.read_excel('df_HRV.xlsx')
 # temporal_feats = temporal_feats.drop(['Diagnosis'], axis=1)
 HRV_NSR = hrv_feats.iloc[:138,:]
 HRV_RHD = hrv_feats.iloc[138:,:]
