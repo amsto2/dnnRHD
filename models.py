@@ -16,7 +16,7 @@ def _inception_module( input_tensor, stride=1, activation='linear', use_bottlene
     else:
         input_inception = input_tensor
 
-    kernel_size_s = [3, 5, 8, 11, 17]
+    kernel_size_s = [3, 5, 9, 11]
     kernel_size_s = [kernel_size // (2 ** i) for i in range(3)]
 
     conv_list = []
