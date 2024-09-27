@@ -793,62 +793,18 @@ def eval_ensemble(X, y, groups,cols):
     return feat_importance1,feat_importance2,feat_importance3   
 
 
-
-
-
-
-
-
-
-# cols=['RWE(60.3–100Hz)','RWE(30.2-64.6Hz)','RWE(15.1–32.3Hz)','RWE(7.5-16.2Hz)','RWE(3.7-8.08Hz)','RWE(1.8–4.04Hz)','RWE(0.9–2.02Hz)','RWE(0.5–1.01Hz)','MEAN_NNI','SDNN','SDSD','NNI_50','PNNI_50','NNI_20','PNNI_20','RMSSD','MEDIAN_NNI','RANGE_NNI','CVSD','CVNNI','MEAN_HR','MAX_HR','MIN_HR','STD_HR',
-#       'P_duration(mean)','P_duration(std)','P_duration(Q2)','P_duration(Q50)','P_duration(Q98)','P_duration(range)','P_duration(median)','P_duration(skewness)','P_duration(mad)','P_duration(curtosis)',
-#       'QRS_duration(mean)','QRS_duration(std)','QRS_duration(Q2)','QRS_duration(Q50)','QRS_duration(Q98)','QRS_duration(range)','QRS_duration(median)','QRS_duration(skewness)','QRS_duration(mad)','QRS_duration(curtosis)',
-#       'T_duration(mean)','T_duration(std)','T_duration(Q2)','T_duration(Q50)','T_duration(Q98)','T_duration(range)','T_duration(median)','T_duration(skewness)','T_duration(mad)','T_duration(curtosis)',
-#       'PR(mean)','PR(std)','PR(Q2)','PR(Q50)','PR(Q98)','PR(range)','PR(median)','PR(skewness)','PR(mad)','PR(curtosis)',
-#       'QT(mean)','QT(std)','QT(Q2)','QT(Q50)','QT(Q98)','QT(range)','QT(median)','QT(skewness)','QT(mad)','QT(curtosis)',
-#       'ST(mean)','ST(std)','ST(Q2)','ST(Q50)','ST(Q98)','ST(range)','ST(median)','ST(skewness)','ST(mad)','ST(curtosis)',
-#       'PT(mean)','PT(std)','PT(Q2)','PT(Q50)','PT(Q98)','PT(range)','PT(median)','PT(skewness)','PT(mad)','PT(curtosis)',
-#       'RR(mean)','RR(std)','RR(Q2)','RR(Q50)','RR(Q98)','RR(range)','RR(median)','RR(skewness)','RR(mad)','RR(curtosis)',
-#       'QTc(mean)','QTc(std)','QTc(Q2)','QTc(Q50)','QTc(Q98)','QTc(range)','QTc(median)','QTc(skewness)','QTc(mad)','QTc(curtosis)',
-#       'TpTe(mean)','TpTe(std)','TpTe(Q2)','TpTe(Q50)','TpTe(Q98)','TpTe(range)','TpTe(median)','TpTe(skewness)','TpTe(mad)','TpTe(curtosis)',
-#       'iCEB(mean)','iCEB(std)','iCEB(Q2)','iCEB(Q50)','iCEB(Q98)','iCEB(range)','iCEB(median)','iCEB(skewness)','iCEB(mad)','iCEB(curtosis)',
-#       'iCEBc(mean)','iCEBc(std)','iCEBc(Q2)','iCEBc(Q50)','iCEBc(Q98)','iCEBc(range)','iCEBc(median)','iCEBc(skewness)','iCEBc(mad)','iCEBc(curtosis)',
-#       'TpTe_QTc(mean)','TpTe_QTc(std)','TpTe_QTc(Q2)','TpTe_QTc(Q50)','TpTe_QTc(Q98)','TpTe_QTc(range)','TpTe_QTc(median)','TpTe_QTc(skewness)','TpTe_QTc(mad)','TpTe_QTc(curtosis)',
-# ]
-
 cols=['RWE(60.3–100Hz)','RWE(30.2-64.6Hz)','RWE(15.1–32.3Hz)','RWE(7.5-16.2Hz)','RWE(3.7-8.08Hz)','RWE(1.8–4.04Hz)','RWE(0.9–2.02Hz)','RWE(0.5–1.01Hz)','SDSD','prcRR20','RMSSD','MADRR','CVSD',
-      'P_duration(mean)','P_duration(std)','P_duration(Q2)','P_duration(Q50)','P_duration(Q98)','P_duration(range)','P_duration(median)','P_duration(skewness)','P_duration(mad)','P_duration(curtosis)',
       'QRS_duration(mean)','QRS_duration(std)','QRS_duration(Q2)','QRS_duration(Q50)','QRS_duration(Q98)','QRS_duration(range)','QRS_duration(median)','QRS_duration(skewness)','QRS_duration(mad)','QRS_duration(curtosis)',
       'T_duration(mean)','T_duration(std)','T_duration(Q2)','T_duration(Q50)','T_duration(Q98)','T_duration(range)','T_duration(median)','T_duration(skewness)','T_duration(mad)','T_duration(curtosis)',
-      'PR(mean)','PR(std)','PR(Q2)','PR(Q50)','PR(Q98)','PR(range)','PR(median)','PR(skewness)','PR(mad)','PR(curtosis)',
-      'QT(mean)','QT(std)','QT(Q2)','QT(Q50)','QT(Q98)','QT(range)','QT(median)','QT(skewness)','QT(mad)','QT(curtosis)',
-      'ST(mean)','ST(std)','ST(Q2)','ST(Q50)','ST(Q98)','ST(range)','ST(median)','ST(skewness)','ST(mad)','ST(curtosis)',
-      'PT(mean)','PT(std)','PT(Q2)','PT(Q50)','PT(Q98)','PT(range)','PT(median)','PT(skewness)','PT(mad)','PT(curtosis)',
       'RR(mean)','RR(std)','RR(Q2)','RR(Q50)','RR(Q98)','RR(range)','RR(median)','RR(skewness)','RR(mad)','RR(curtosis)',
-      'QTc(mean)','QTc(std)','QTc(Q2)','QTc(Q50)','QTc(Q98)','QTc(range)','QTc(median)','QTc(skewness)','QTc(mad)','QTc(curtosis)',
       'TpTe(mean)','TpTe(std)','TpTe(Q2)','TpTe(Q50)','TpTe(Q98)','TpTe(range)','TpTe(median)','TpTe(skewness)','TpTe(mad)','TpTe(curtosis)',
       'iCEB(mean)','iCEB(std)','iCEB(Q2)','iCEB(Q50)','iCEB(Q98)','iCEB(range)','iCEB(median)','iCEB(skewness)','iCEB(mad)','iCEB(curtosis)',
       'iCEBc(mean)','iCEBc(std)','iCEBc(Q2)','iCEBc(Q50)','iCEBc(Q98)','iCEBc(range)','iCEBc(median)','iCEBc(skewness)','iCEBc(mad)','iCEBc(curtosis)',
-      'TpTe_QTc(mean)','TpTe_QTc(std)','TpTe_QTc(Q2)','TpTe_QTc(Q50)','TpTe_QTc(Q98)','TpTe_QTc(range)','TpTe_QTc(median)','TpTe_QTc(skewness)','TpTe_QTc(mad)','TpTe_QTc(curtosis)',
 ]
-# cols=['RWE(60.3–100Hz)','RWE(30.2-64.6Hz)','RWE(15.1–32.3Hz)','RWE(7.5-16.2Hz)','RWE(3.7-8.08Hz)','RWE(1.8–4.04Hz)','RWE(0.9–2.02Hz)','RWE(0.5–1.01Hz)','SDSD','prcRR20','RMSSD','MADRR','CVSD',
-#       'QRS_duration(mean)','QRS_duration(std)','QRS_duration(Q2)','QRS_duration(Q50)','QRS_duration(Q98)','QRS_duration(range)','QRS_duration(median)','QRS_duration(skewness)','QRS_duration(mad)','QRS_duration(curtosis)',
-#       'T_duration(mean)','T_duration(std)','T_duration(Q2)','T_duration(Q50)','T_duration(Q98)','T_duration(range)','T_duration(median)','T_duration(skewness)','T_duration(mad)','T_duration(curtosis)',
-#       'RR(mean)','RR(std)','RR(Q2)','RR(Q50)','RR(Q98)','RR(range)','RR(median)','RR(skewness)','RR(mad)','RR(curtosis)',
-#       'TpTe(mean)','TpTe(std)','TpTe(Q2)','TpTe(Q50)','TpTe(Q98)','TpTe(range)','TpTe(median)','TpTe(skewness)','TpTe(mad)','TpTe(curtosis)',
-#       'iCEB(mean)','iCEB(std)','iCEB(Q2)','iCEB(Q50)','iCEB(Q98)','iCEB(range)','iCEB(median)','iCEB(skewness)','iCEB(mad)','iCEB(curtosis)',
-#       'iCEBc(mean)','iCEBc(std)','iCEBc(Q2)','iCEBc(Q50)','iCEBc(Q98)','iCEBc(range)','iCEBc(median)','iCEBc(skewness)','iCEBc(mad)','iCEBc(curtosis)',
-# ]
-# from sklearn import decomposition
-# pca = decomposition.PCA(n_components=50)  # not for RWE features but we will see later
-# X = pd.DataFrame(RHDECG_RWE_temporal_X, columns=cols)
-# new_df=pca.fit_transform(X)
-# print('PCA components: ',pca_comp.shape)
-# cols_pca=pd.DataFrame(pca_comp.components_.T, index=X.columns)
-# cols=cols_pca
-# results1,results2,results3= eval_ensemble(new_df.values, RHDECG_RWE_Y, groups,cols)
 
-
+######################################
+# Feature selection 
+######################################
 from sklearn.feature_selection import RFECV
 from sklearn.feature_selection import RFE
 clfrefe = RandomForestClassifier(random_state = 0) # Instantiate the algo
@@ -863,9 +819,6 @@ new_df = X.drop(list(columns_to_remove), axis = 1)
 cols=new_df.columns.to_list()
 results1,results2,results3=eval_ensemble(new_df.values, RHDECG_RWE_Y, groups,cols)
 
-
-
-
 # min_features_to_select = 1
 # rfc = RandomForestClassifier(random_state = 32)
 # rfe = RFE(estimator=rfc, n_features_to_select= 50, step=1)
@@ -873,7 +826,6 @@ results1,results2,results3=eval_ensemble(new_df.values, RHDECG_RWE_Y, groups,col
 # fits= rfe.fit(X, RHDECG_RWE_Y)
 # for i in range(RHDECG_RWE_temporal_X.shape[1]):
 #     print('Column: %d, Selected %s, Rank: %.3f' % (i, rfe.support_[i], rfe.ranking_[i]))
-
 
 
 
@@ -918,22 +870,7 @@ for ticklabel, tickcolor in zip(plt.gca().get_xticklabels(), my_colors):
 plt.show()
 '''
 
-'''
-cols=['D2','D3','D4','D5','D6','D7','D8','D9','MEAN_NNI','SDNN','SDSD','NNI_50','PNNI_50','NNI_20','PNNI_20','RMSSD','MEDIAN_NNI','RANGE_NNI','CVSD','CVNNI','MEAN_HR','MAX_HR','MIN_HR','STD_HR',
-      'P_duration(mean)','P_duration(std)','P_duration(min)','P_duration(Q2)','P_duration(Q50)','P_duration(Q98)','P_duration(max)','P_duration(range)','P_duration(median)','P_duration(skewness)','P_duration(mad)','P_duration(curtosis)',
-      'QRS_duration(mean)','QRS_duration(std)','QRS_duration(min)','QRS_duration(Q2)','QRS_duration(Q50)','QRS_duration(Q98)','QRS_duration(max)','QRS_duration(range)','QRS_duration(median)','QRS_duration(skewness)','QRS_duration(mad)','QRS_duration(curtosis)',
-      'T_duration(mean)','T_duration(std)','T_duration(min)','T_duration(Q2)','T_duration(Q50)','T_duration(Q98)','T_duration(max)','T_duration(range)','T_duration(median)','T_duration(skewness)','T_duration(mad)','T_duration(curtosis)',
-      'PR(mean)','PR(std)','PR(min)','PR(Q2)','PR(Q50)','PR(Q98)','PR(max)','PR(range)','PR(median)','PR(skewness)','PR(mad)','PR(curtosis)',
-      'QT(mean)','QT(std)','QT(min)','QT(Q2)','QT(Q50)','QT(Q98)','QT(max)','QT(range)','QT(median)','QT(skewness)','QT(mad)','QT(curtosis)',
-      'ST(mean)','ST(std)','ST(min)','ST(Q2)','ST(Q50)','ST(Q98)','ST(max)','ST(range)','ST(median)','ST(skewness)','ST(mad)','ST(curtosis)','PT(mean)','PT(std)','PT(min)','PT(Q2)','PT(Q50)','PT(Q98)','PT(max)','PT(range)','PT(median)','PT(skewness)','PT(mad)','PT(curtosis)',
-      'RR(mean)','RR(std)','RR(min)','RR(Q2)','RR(Q50)','RR(Q98)','RR(max)','RR(range)','RR(median)','RR(skewness)','RR(mad)','RR(curtosis)','QTc(mean)','QTc(std)','QTc(min)','QTc(Q2)','QTc(Q50)','QTc(Q98)','QTc(max)','QTc(range)','QTc(median)','QTc(skewness)','QTc(mad)','QTc(curtosis)',
-      'TpTe(mean)','TpTe(std)','TpTe(min)','TpTe(Q2)','TpTe(Q50)','TpTe(Q98)','TpTe(max)','TpTe(range)','TpTe(median)','TpTe(skewness)','TpTe(mad)','TpTe(curtosis)',
-      'iCEB(mean)','iCEB(std)','iCEB(min)','iCEB(Q2)','iCEB(Q50)','iCEB(Q98)','iCEB(max)','iCEB(range)','iCEB(median)','iCEB(skewness)','iCEB(mad)','iCEB(curtosis)',
-      'iCEBc(mean)','iCEBc(std)','iCEBc(min)','iCEBc(Q2)','iCEBc(Q50)','iCEBc(Q98)','iCEBc(max)','iCEBc(range)','iCEBc(median)','iCEBc(skewness)','iCEBc(mad)','iCEBc(curtosis)',
-      'TpTe_QTc(mean)','TpTe_QTc(std)','TpTe_QTc(min)','TpTe_QTc(Q2)','TpTe_QTc(Q50)','TpTe_QTc(Q98)','TpTe_QTc(range)','TpTe_QTc(max)','TpTe_QTc(median)','TpTe_QTc(skewness)','TpTe_QTc(mad)','TpTe_QTc(curtosis)',
-      'STT(mean)','STT(std)','STT(min)','STT(Q2)','STT(Q50)','STT(Q98)','STT(max)','STT(range)','STT(median)','STT(skewness)','STT(mad)','STT(curtosis)',
-]
-'''
+
 
 '''
 # Merged CNN Model with RWE features
