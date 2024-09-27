@@ -262,7 +262,7 @@ for j in range(0,len(nsr_filt)):
     
     
     #################################################################
-    # HRV analysis module/paper
+    # HRV analysis module
     #################################################################
     rpeaks_list=peaks#rr_intervals_list*1000 # convert to ms
     # This remove outliers from signal
@@ -509,6 +509,24 @@ def eval_ensemble(X, y, groups,cols):
     feat_importance2=[]
     feat_importance3=[]
 
+
+    params_xgb = {
+        'max_depth'  :[2,3,6],
+        'min_child_weight' :[1,3,5],
+        'learning_rate'  :[0.01,0.1,0.5,0.9],
+        'gamma'  :[0,0.1,0.25,1],
+        'reg_lambda'  :[0,1,10],
+        'max_delta_step':[0.1,1,5],
+        #'scale_pos_weight'  :[1,3,5],
+        'subsample'     :[0.2,0.5,0.8]   
+    }    
+    params_svm = {
+        'C'  :[3,50,100],
+        'kernel' :['rbf','poly'],
+        #'gamma'  :[0.0001,0.001,0.01,0.1,1],
+        'gamma': ['scale', 'auto'],
+    }
+
     
     fold_count=1
     splits=10
@@ -519,7 +537,7 @@ def eval_ensemble(X, y, groups,cols):
         rec_list_test=rec_list[test_index]
         classes_weights = class_weight.compute_sample_weight( class_weight='balanced',y=y_train)
 
-        # Making the Classifer Ensemble with voting
+        # Initialize classifiers and making an Ensemble
         # Classifier1 = SVC(kernel='poly', probab1ility=True, C=1000, degree=5)
         # Classifier2 = AdaBoostClassifier(n_estimators=200, learning_rate=1)
         # Classifier = XGBClassifier(n_estimators=100,learning_rate=0.1, scale_pos_weight = .5)
@@ -539,9 +557,22 @@ def eval_ensemble(X, y, groups,cols):
         #     estimators=[('XGB', Classifier3), ('EasyEnsemble', Classifier8)],
         #     voting='soft')
 
+        sample_weights = class_weight.compute_sample_weight(class_weight='balanced',y=y_train)
+        ind, cnts = np.unique(sample_weights, return_counts=True)
+        c_weights = {0: cnts[0], 1: cnts[1]}  # Class 0: , Class 1: 
+        pos_weight = sum(c_weights.values()) / sum(c_weights.keys())
+        Classifier = GridSearchCV(
+            estimator=xgb.XGBClassifier(objective='binary:logistic',seed=41,early_stopping_rounds=20, colsample_bytree=0.75,scale_pos_weight=pos_weight),
+            param_grid=params_xgb,
+            scoring='f1',
+            n_jobs=10,
+            cv=3
+            )    
+        
         X_train=pd.DataFrame(X_train, columns=cols)
-
-        # HRV
+        ######################################
+        # HRV features evaluation
+        ######################################
         # ensembleClassifier.fit(X_train[:,9:], y_train)
         # for clf, label in zip([Classifier1, Classifier2, Classifier3, Classifier4, Classifier5, Classifier6, Classifier7,Classifier8,ensembleClassifier], ['SVM', 'AdaBoost', 'XGBoost', 'RandForest', 'KNN', 'Gaussian Naive Bayes', 'RUSBoost','easyEnsemble','Ensemble']):
 
@@ -569,8 +600,9 @@ def eval_ensemble(X, y, groups,cols):
         perm_importance_result_train = permutation_importance(Classifier, X_train.iloc[:,9:], y_train, n_repeats=10)
         feat_importance1.append(perm_importance_result_train)
                         
-                        
-        #RWE                
+        ######################################                
+        #RWE   
+        ######################################
         # ensembleClassifier.fit(X_train[:,:9], y_train)
         # for clf, label in zip([Classifier1, Classifier2, Classifier3, Classifier4, Classifier5, Classifier6, Classifier7,Classifier8,ensembleClassifier], ['SVM', 'AdaBoost', 'XGBoost', 'RandForest', 'KNN', 'Gaussian Naive Bayes', 'RUSBoost','easyEnsemble','Ensemble']):
         #     clf.fit(X_train[:,:9], y_train)
@@ -594,8 +626,10 @@ def eval_ensemble(X, y, groups,cols):
         # feature importance evalautaionRWE
         perm_importance_result_train = permutation_importance(Classifier, X_train.iloc[:,:9], y_train, n_repeats=10)
         feat_importance2.append(perm_importance_result_train)
-                        
+
+        ######################################
         # RWE + HRV                
+        ######################################
         # ensembleClassifier.fit(X_train, y_train)
         # for clf, label in zip([Classifier1, Classifier2, Classifier3, Classifier4, Classifier5, Classifier6, Classifier7,Classifier8,ensembleClassifier], ['SVM', 'AdaBoost', 'XGBoost', 'RandForest', 'KNN', 'Gaussian Naive Bayes', 'RUSBoost','easyEnsemble','Ensemble']):
         #     clf.fit(X_train, y_train)
