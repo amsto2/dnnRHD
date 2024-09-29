@@ -1,3 +1,7 @@
+# Project: Automatic Heart Sound Classification
+
+This repository contains implementations of different deep learning networks which can efficiently classify normal/abnormal heartsound with only PCG (Phonocardiography) input. The framework is based on [pytorch-template](https://github.com/victoresque/pytorch-template).
+
 ## dnn_RHD
  
 Machine learning for classification of advanced rheumatic heart disease from wearable electrocardiogram signals (link to paper)
@@ -6,6 +10,11 @@ This repo contains code snippets used for the aforementioned paper. In this work
 The work flow block diagram is shown below.
 
 ![WorkFlow](https://github.com/user-attachments/assets/04665597-70f2-4673-9713-d6244f917551)
+
+## Dataset
+
+We use the age-matched subjects having Normal sinus rhythm from PTB-XL database from the [PhysioNet/CinC PTB-XL database](https://physionet.org/ptb-xl/), which contains in total of 6996 ECG records. In addition, RHDECG dataset that consists of 146 subjects, of which 117 subjects with RHD, and the remaining were healthy controls. 
+
 
 The extracted time-frequency features and raw ECG of 10-second duration were used for classification. We evaluated different experiments and the obtained results suggest potential use of ECGs in RHD detection, helping in reduction of disease intervention burden particularly at resource onstrained medical setting.
 
