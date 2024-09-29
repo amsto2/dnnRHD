@@ -12,7 +12,7 @@ The work flow block diagram is shown below.
 We use the age-matched subjects having Normal sinus rhythm from PTB-XL database from the [PhysioNet/CinC PTB-XL database](https://physionet.org/content/ptb-xl/1.0.3/), which contains in total of 6996 ECG records. In addition, RHDECG dataset that consists of 146 subjects, of which 117 subjects with RHD, and the remaining were healthy controls. 
 
 ## Validation metrics
-<img src="https://github.com/user-attachments/assets/01475718-f306-422d-b391-1ad0335abfd4" width="100" height="100">
+<img src="https://github.com/user-attachments/assets/01475718-f306-422d-b391-1ad0335abfd4" width="300" height="300">
 
 ```bash
 Accuracy = (TP + TN) \ (TP + FN + FP + TN)
