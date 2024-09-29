@@ -27,7 +27,7 @@ The extracted time-frequency features and raw ECG of 10-second duration were use
 
 ![image](https://github.com/user-attachments/assets/89854268-da68-403f-ab19-f2ba4c3415ab)
 
-
+<!--- comment 
 10 fold validation with model CNN
 
 |Fold      |Accuracy|Sensitivity|Specificity|MAcc   | F1 Score  |
@@ -43,7 +43,7 @@ The extracted time-frequency features and raw ECG of 10-second duration were use
 |9          |0.918   |0.899      |0.894      |0.897  |0.934      |
 |10         |0.924   |0.888      |0.848      |0.868  |0.922      |
 |Average    |0.969   |0.896      |0.910      |0.903  |0.933      |  
-
+--->
 requirements
 
 ```bash
