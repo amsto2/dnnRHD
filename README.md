@@ -13,7 +13,7 @@ We use the age-matched subjects having Normal sinus rhythm from PTB-XL database 
 
 ## Validation metrics
 
-![confusion_matrix](https://github.com/user-attachments/assets/05f1c66d-da5b-4e01-a4ce-abf06741d91e)
+![confusion_matrix](https://github.com/user-attachments/assets/01475718-f306-422d-b391-1ad0335abfd4)
 
 
 ```bash
