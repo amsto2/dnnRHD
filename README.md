@@ -11,11 +11,6 @@ The work flow block diagram is shown below.
 
 We use the age-matched subjects having Normal sinus rhythm from PTB-XL database from the [PhysioNet/CinC PTB-XL database](https://physionet.org/ptb-xl/), which contains in total of 6996 ECG records. In addition, RHDECG dataset that consists of 146 subjects, of which 117 subjects with RHD, and the remaining were healthy controls. 
 
-
-The extracted time-frequency features and raw ECG of 10-second duration were used for classification. We evaluated different experiments and the obtained results suggest potential use of ECGs in RHD detection, helping in reduction of disease intervention burden particularly at resource onstrained medical setting.
-
-![image](https://github.com/user-attachments/assets/89854268-da68-403f-ab19-f2ba4c3415ab)
-
 ## Validation metrics
 
 ![confusion_matrix](image/confusion_matrix.png)
@@ -24,33 +19,31 @@ The extracted time-frequency features and raw ECG of 10-second duration were use
 Accuracy = (TP + TN) \ (TP + FN + FP + TN)
 Sensitivity = TP \ (TP + FN) 
 Specificity = TN \ (FP + TN) 
-MAcc = (Sensitivity + Specificity) \ 2 
 F1_Score = 2 * TP \ (2 * TP + FP + FN)
 ```
+
 ## Results
 
-| Model     |Model size|Accuracy|Sensitivity|Specificity|MAcc   | F1 Score  |
-| ----------|----------|--------|---------- | ----------|-------| ----------|
-| simple_cnn|428.5MB   |85.2    |83.6       |91.9       |87.8   |90.1       |
-| VGG11     |72MB      |92.3    |95.4       |79.0       |87.2   |95.2       | 
-| BiLSTM    |37MB      |83.0    |82.1       |87.1       |84.6   |88.7       | 
-| CRNN      |59MB      |88.0    |86.6       |93.5       |90.1   |92.1       |
+The extracted time-frequency features and raw ECG of 10-second duration were used for classification. We evaluated different experiments and the obtained results suggest potential use of ECGs in RHD detection, helping in reduction of disease intervention burden particularly at resource onstrained medical setting.
 
-10 fold validation with model CRNN
+![image](https://github.com/user-attachments/assets/89854268-da68-403f-ab19-f2ba4c3415ab)
+
+
+10 fold validation with model CNN
 
 |Fold      |Accuracy|Sensitivity|Specificity|MAcc   | F1 Score  |
 | ----------|--------|---------- | ----------|-------| ----------|
-|1          |0.898   |0.891      |0.925      |0.908  |0.933      |
+|1          |0.928   |0.891      |0.925      |0.908  |0.933      |
 |2          |0.941   |0.961      |0.866      |0.913  |0.963      |
 |3          |0.917   |0.926      |0.881      |0.903  |0.946      |
 |4          |0.929   |0.914      |0.985      |0.950  |0.953      |
 |5          |0.935   |0.946      |0.896      |0.921  |0.959      |
-|6          |0.809   |0.775      |0.940      |0.857  |0.866      |
-|7          |0.886   |0.876      |0.924      |0.900  |0.924      |
-|8          |0.898   |0.888      |0.940      |0.913  |0.933      |
-|9          |0.898   |0.899      |0.894      |0.897  |0.934      |
-|10         |0.880   |0.888      |0.848      |0.868  |0.922      |
-|Average    |0.899   |0.896      |0.910      |0.903  |0.933      |  
+|6          |0.939   |0.775      |0.940      |0.857  |0.866      |
+|7          |0.986   |0.876      |0.924      |0.900  |0.924      |
+|8          |0.948   |0.888      |0.940      |0.913  |0.933      |
+|9          |0.918   |0.899      |0.894      |0.897  |0.934      |
+|10         |0.924   |0.888      |0.848      |0.868  |0.922      |
+|Average    |0.969   |0.896      |0.910      |0.903  |0.933      |  
 
 requirements
 
