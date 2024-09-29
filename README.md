@@ -1,8 +1,4 @@
-# Project: Automatic Heart Sound Classification
-
-This repository contains implementations of different deep learning networks which can efficiently classify normal/abnormal heartsound with only PCG (Phonocardiography) input. The framework is based on [pytorch-template](https://github.com/victoresque/pytorch-template).
-
-## dnn_RHD
+# Project: Automatic RHD Classification from single-lead ECG
  
 Machine learning for classification of advanced rheumatic heart disease from wearable electrocardiogram signals (link to paper)
 
