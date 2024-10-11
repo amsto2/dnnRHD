@@ -1,7 +1,7 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[2]:
+'''
+Author: Amsalu Tomas
+Date: 12/08/2023
+'''
 
 
 import numpy as np 
