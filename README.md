@@ -47,9 +47,7 @@ The extracted time-frequency features and raw ECG of 10-second duration were use
 ## Requirements
 
 ```bash
-gensim==4.1.2
 h5py==2.10.0
-numba==0.54.0
 numpy==1.20.3
 pandas==1.3.3
 scikit-learn==0.24.2
@@ -64,4 +62,6 @@ tokenizers==0.11.4
 tqdm==4.62.2
 urllib3==1.26.6
 zsvision==0.7.12
+neurokit==0.2.10
+hrv-analysis==1.0.4
 ```
