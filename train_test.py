@@ -1313,7 +1313,7 @@ def grad_cam(layer_name, data, model):
 plt.figure(dpi=300)
 plt.rcParams.update({'font.size': 20})
 plt.figure(figsize=(30,4))
-layer_name = 'conv1d_255'
+layer_name = 'conv1d_last'  # change the layer name you want to visualize 
 label = ['Normal', 'PwRHD']
 cnt = 0
 fs=500
