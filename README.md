@@ -1,4 +1,4 @@
-# Project: Automatic RHD Classification from single-lead ECG
+# Automatic RHD Classification from single-lead ECG
  
 Machine learning for classification of advanced rheumatic heart disease from wearable electrocardiogram signals (link to paper)
 
