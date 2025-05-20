@@ -24,6 +24,8 @@ F1_Score = 2 * TP \ (2 * TP + FP + FN)
 ## Results
 
 The extracted time-frequency features and raw ECG of 10-second duration were used for classification. We evaluated different experiments and the obtained results suggest potential use of ECGs in RHD detection, helping in reduction of disease intervention burden particularly at resource onstrained medical setting.
+![image](https://github.com/user-attachments/assets/ff9769d5-e7e5-448c-95f5-5a7435865829)
+![image](https://github.com/user-attachments/assets/b1759514-fe10-43f6-a9f6-654e36c7e666)
 
 ![image](https://github.com/user-attachments/assets/89854268-da68-403f-ab19-f2ba4c3415ab)
 
