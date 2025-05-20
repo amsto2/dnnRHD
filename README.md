@@ -1,4 +1,5 @@
-# Automatic RHD Classification from single-lead ECG
+%# Automatic RHD Classification from single-lead ECG
+# Machine learning for classification of advanced 1 rheumatic heart disease using electrocardiogram in cardiology ward
  
 Machine learning for classification of advanced rheumatic heart disease from wearable electrocardiogram signals: link to paper (BMC Cardiovascular Disorders)
 
